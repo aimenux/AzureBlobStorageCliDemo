@@ -18,6 +18,9 @@ namespace App.Commands
             _logger = logger;
         }
 
+        [Option("-bn|--blobname", "Name of blob to upload.", CommandOptionType.SingleValue)]
+        public string BlobName { get; set; }
+
         [Option("-fp|--filepath", "Path of file to upload.", CommandOptionType.SingleValue)]
         public string FileToUpload { get; set; }
 
@@ -30,7 +33,8 @@ namespace App.Commands
         public Task OnExecuteAsync(CommandLineApplication app)
         {
             var showHelp =
-                string.IsNullOrWhiteSpace(FileToUpload)
+                string.IsNullOrWhiteSpace(BlobName)
+                || string.IsNullOrWhiteSpace(FileToUpload)
                 || string.IsNullOrWhiteSpace(ContainerName)
                 || string.IsNullOrWhiteSpace(ConnectionString);
 
@@ -41,7 +45,7 @@ namespace App.Commands
             }
 
             var blobClient = new AzureBlobClient(ConnectionString, ContainerName, _logger);
-            return blobClient.UploadBlobAsync(FileToUpload);
+            return blobClient.UploadBlobAsync(BlobName, FileToUpload);
         }
 
         private string GetVersion() => GetType().GetVersion();

@@ -30,7 +30,7 @@ namespace Lib
             _logger = logger;
         }
 
-        public async Task UploadBlobAsync(string filepath)
+        public async Task UploadBlobAsync(string blobName, string filepath)
         {
             try
             {
@@ -38,7 +38,6 @@ namespace Lib
                 {
                     var fileInfo = new FileInfo(filepath);
                     var totalBytes = fileInfo.Length;
-                    var blobName = fileInfo.Name;
 
                     var progress = new Progress<long>();
                     progress.ProgressChanged += (object _, long currentBytes) => ProgressChanged(progressBar, currentBytes, totalBytes);
@@ -53,7 +52,51 @@ namespace Lib
             }
         }
 
-        public async Task DownloadBlobAsync(string blobName, string filepath)
+        public Task DownloadBlobAsync(string blobName, string filepath, DownloadStrategies strategy = DownloadStrategies.UsingBlobPropertiesAndStreams)
+        {
+            switch (strategy)
+            {
+                case DownloadStrategies.UsingBlobPropertiesAndStreams:
+                    return DownloadBlobUsingBlobPropertiesAndStreamsAsync(blobName, filepath);
+
+                case DownloadStrategies.UsingBlobDownloadInfoAndStreams:
+                    return DownloadBlobUsingBlobDownloadInfoAndStreamsAsync(blobName, filepath);
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(strategy), $"Unexpected choice {strategy}");
+            }
+        }
+
+        private async Task DownloadBlobUsingBlobPropertiesAndStreamsAsync(string blobName, string filepath)
+        {
+            try
+            {
+                var blobClient = new BlobClient(_connectionString, _containerName, blobName);
+                var properties = await blobClient.GetPropertiesAsync();
+                var totalBytes = properties.Value.ContentLength;
+                var bufferBytes = new byte[2 * 1024 * 1024];
+                var currentBytes = 0;
+                var streamBytes = 0;
+
+                using (var outputStream = File.Create(filepath))
+                using (var blobStream = await blobClient.OpenReadAsync())
+                using (var progressBar = new ProgressBar(MaxTicks, "Download File Progress", _options))
+                {
+                    while ((streamBytes = await blobStream.ReadAsync(bufferBytes, 0, bufferBytes.Length)) != 0)
+                    {
+                        await outputStream.WriteAsync(bufferBytes, 0, streamBytes);
+                        currentBytes += streamBytes;
+                        ProgressChanged(progressBar, currentBytes, totalBytes);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An exception has occured: {ex}", ex);
+            }
+        }
+
+        private async Task DownloadBlobUsingBlobDownloadInfoAndStreamsAsync(string blobName, string filepath)
         {
             try
             {

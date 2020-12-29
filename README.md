@@ -1,1 +1,25 @@
+![.NET Core](https://github.com/aimenux/AzureBlobStorageCliDemo/workflows/.NET%20Core/badge.svg)
 # AzureBlobStorageCliDemo
+```
+Providing net core global cli tool for uploading/downloading files from/to blob storage with progress bar display
+```
+
+> In this demo, i m building a global cli tool that allows to upload/download blobs from/to azure storage
+> When the tool is running, a [progress bar](https://github.com/Mpdreamz/shellprogressbar) is shown to the user in order to indicate the progress percentage.
+>
+> The tool is based on one main command and two sub commmands :
+> - Use sub command `UploadFileCli` to upload file to blob storage
+> - Use sub command `DownloadFileCli` to download file from blob storage
+>
+> In order to run the demo, type the following commands in your favorite terminal : 
+> - `.\App.exe UploadFileCli -cs ConnectionString -cn ContainerName -bn BlobName -fp FilePath`
+> - `.\App.exe DownloadFileCli -cs ConnectionString -cn ContainerName -bn BlobName -fp FilePath`
+>
+> To install, run, uninstall global tool from a local source path, type commands :
+> - ` dotnet tool install -g --add-source ./app/cli-tools azureblob-cli --configfile .\nuget.config`
+> - `azureblob-cli -h`
+> - `azureblob-cli UploadFileCli -h`
+> - `azureblob-cli DownloadFileCli -h`
+> - `dotnet tool uninstall azureblob-cli -g`
+
+**`Tools`** : vs19, net core 3.1

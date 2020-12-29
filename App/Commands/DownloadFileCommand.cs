@@ -2,6 +2,7 @@
 using Lib;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace App.Commands
@@ -30,6 +31,9 @@ namespace App.Commands
         [Option("-fp|--filepath", "Path to use for the downloaded file.", CommandOptionType.SingleValue)]
         public string DownloadFilePath { get; set; }
 
+        [Option("-ds|--strategy", "Strategy to use for download operation.", CommandOptionType.SingleOrNoValue)]
+        public string DownloadStrategy { get; set; }
+
         public Task OnExecuteAsync(CommandLineApplication app)
         {
             var showHelp =
@@ -45,7 +49,10 @@ namespace App.Commands
             }
 
             var blobClient = new AzureBlobClient(ConnectionString, ContainerName, _logger);
-            return blobClient.DownloadBlobAsync(BlobName, DownloadFilePath);
+
+            return Enum.TryParse<DownloadStrategies>(DownloadStrategy, out var strategy) 
+                ? blobClient.DownloadBlobAsync(BlobName, DownloadFilePath, strategy)
+                : blobClient.DownloadBlobAsync(BlobName, DownloadFilePath);
         }
 
         private string GetVersion() => GetType().GetVersion();
