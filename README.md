@@ -4,8 +4,8 @@
 Providing net core global tool for uploading/downloading files from/to blob storage
 ```
 
-> In this demo, i m building a global tool that allows to upload/download blobs from/to azure storage. 
-The tool use [shellprogressbar](https://github.com/Mpdreamz/shellprogressbar) library in order to display progress percentage of upload/download operations.
+> In this demo, i m building a global tool that allows to upload or download blobs from or to azure storage. 
+The tool use [shellprogressbar](https://github.com/Mpdreamz/shellprogressbar) library in order to display the progress percentage of each operation.
 >
 > The tool is based on one main command and two sub commmands :
 >> - Use sub command `UploadFileCli` to upload file to blob storage
