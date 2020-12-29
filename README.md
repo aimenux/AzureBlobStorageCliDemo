@@ -1,11 +1,12 @@
 ![.NET Core](https://github.com/aimenux/AzureBlobStorageCliDemo/workflows/.NET%20Core/badge.svg)
 # AzureBlobStorageCliDemo
 ```
-Providing net core global cli tool for uploading/downloading files from/to blob storage with progress bar display
+Providing net core global cli tool for uploading/downloading files from/to blob storage
 ```
 
 > In this demo, i m building a global cli tool that allows to upload/download blobs from/to azure storage
-> When the tool is running, a [progress bar](https://github.com/Mpdreamz/shellprogressbar) is shown to the user in order to indicate the progress percentage.
+>
+> When the tool is running, a [progress bar](https://github.com/Mpdreamz/shellprogressbar) is shown to the user to indicate the progress percentage.
 >
 > The tool is based on one main command and two sub commmands :
 > - Use sub command `UploadFileCli` to upload file to blob storage
